@@ -52,17 +52,20 @@ UPC WM == UPC[0:-1].zifll(16)
 
 Final Price == min (price, sale price). 
 '''
+#scrapy.spiders.SitemapSpider
 class PrixzSpider(scrapy.spiders.SitemapSpider):
     name = 'prixz'
     sitemap_urls = ['https://prixz.com/sitemap_index.xml']
     sitemap_rule = [
         ('/c/', 'parse'),
     ]
+    #start_urls = ['https://prixz.com/c/farmacia/alta-especialidad/antivirales-alta-especialidad/atazanavir-sago-300mg-capsula-30/']
+
     def parse(self, response):
         title = response.xpath("//h1[contains(@class,'product_title')]/text()").extract_first()
         stock = response.xpath("//div[contains(@class,'stock_disponible')]/b/text()").extract_first()
-        price = response.xpath("//span[contains(@class,'woocommerce-Price-amount')]/bdi/text()").extract_first()
-        sale_price =  response.xpath("//ins/span[contains(@class,'woocommerce-Price-amount')]/bdi/text()").extract_first()
+        price = response.xpath("//div[@class='summary entry-summary']//span[contains(@class,'woocommerce-Price-amount')]/bdi/text()").extract_first()
+        sale_price =  response.xpath("//div[@class='summary entry-summary']//ins/span[contains(@class,'woocommerce-Price-amount')]/bdi/text()").extract_first()
         shipment_cost = response.xpath("//svg[contains(@class,'ui-pdp-icon--truck')]/parent::figure/following-sibling::div/p/text()").extract_first()
         sku = response.xpath('//span[@class="sku"]/text()').extract_first()
         presenticion = response.xpath('//p[contains(text(),"Presentación")]/parent::td/following-sibling::td/p/text()').extract_first()
